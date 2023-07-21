@@ -53,5 +53,26 @@ def obter_produtos():
         return jsonify(produtos)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# Visualizar um produto por ID
+@app.route('/produto/<int:id>', methods=['GET'])
+def obter_produto_por_id(id):
+    try:
+        conn = conectar_db()
+        cursor = conn.cursor()
+        query = "SELECT * FROM produtos WHERE idVendas = %s"
+        cursor.execute(query, (id,))
+        produto = cursor.fetchone()
+        conn.close()
+        if produto:
+            return jsonify({
+                'idVendas': produto[0],
+                'nome_produto': produto[1],
+                'valor': produto[2]
+            })
+        else:
+            return jsonify({'message': 'Produto não encontrado!'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 app.run(port=5000, host='localhost', debug=True)
