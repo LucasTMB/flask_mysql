@@ -89,5 +89,19 @@ def atualizar_produto(id):
         return jsonify({'message': 'Produto atualizado com sucesso!'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# Deletar produto por ID
+@app.route('/produto/<int:id>', methods=['DELETE'])
+def deletar_produto(id):
+    try:
+        conn = conectar_db()
+        cursor = conn.cursor()
+        query = "DELETE FROM produtos WHERE idVendas = %s"
+        cursor.execute(query, (id,))
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'Produto deletado com sucesso!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 app.run(port=5000, host='localhost', debug=True)
