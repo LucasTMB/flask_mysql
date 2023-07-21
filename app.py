@@ -33,5 +33,25 @@ def criar_produto():
         return(jsonify({'message': 'Produto criado com sucesso!'})), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# Visualizar todos os produtos
+@app.route('/produtos', methods=['GET'])
+def obter_produtos():
+    try:
+        conn = conectar_db()
+        cursor = conn.cursor()
+        query = "SELECT * FROM produtos"
+        cursor.execute(query)
+        produtos = []
+        for (idVendas, nome_produto, valor) in cursor:
+            produtos.append({
+                'idVendas': idVendas,
+                'nome_produto': nome_produto,
+                'valor': valor
+            })
+        conn.close()
+        return jsonify(produtos)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 app.run(port=5000, host='localhost', debug=True)
