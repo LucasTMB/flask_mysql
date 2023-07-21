@@ -74,5 +74,20 @@ def obter_produto_por_id(id):
             return jsonify({'message': 'Produto não encontrado!'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# Atualizar um produto por ID
+@app.route('/produto/<int:id>', methods=['PUT'])
+def atualizar_produto(id):
+    try:
+        data = request.get_json()
+        conn = conectar_db()
+        cursor = conn.cursor()
+        query = "UPDATE produtos SET nome_produto = %s, valor = %s WHERE idVendas = %s"
+        cursor.execute(query, (data['nome_produto'], data['valor'], id))
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'Produto atualizado com sucesso!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 app.run(port=5000, host='localhost', debug=True)
